@@ -39,8 +39,13 @@ class Frame():
         else:
             val = tk.BooleanVar().set(False)
 
-        cb = tk.Checkbutton(self.frm, variable=val)
+        cb = ttk.Checkbutton(self.frm, variable=val)
         cb.grid(row=self.r, column=1, padx=3, pady=3)
+        self.r += 1
+
+    def button(self, label, bind_action):
+        btn = tk.Button(self.frm, text=label, command=bind_action)
+        btn.grid(row=self.r, column=1, padx=3, pady=3)
         self.r += 1
 
 class Window():
@@ -57,6 +62,10 @@ class Window():
         self.nb.pack(expand=1, fill='both')
 
 ####################################################
+def test_action_print():
+    print("hello_tk_world")
+
+####################################################
 if __name__ == '__main__':
     # waku ##########################
     window1 = Window("sample waku")
@@ -70,8 +79,11 @@ if __name__ == '__main__':
     nb.add(tab1, text="tab1", padding=3)
     nb.pack(expand=1, fill='both')
 
+
+
     # frame 1-1
     frm_1_1 = Frame(tab1, 'frame 1-1')
+    frm_1_1.button("button1", test_action_print)
     frm_1_1.slider("param1", 0, 100)
     frm_1_1.dropdown("param2", ["1", "2", "3"])
     frm_1_1.dropdown("param3", ["a", "b", "c"])
