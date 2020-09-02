@@ -5,78 +5,101 @@ import sys
 import tkinter as tk
 import tkinter.ttk as ttk
 
+# tkinterで楽してGUI組むために機能を省いたもの。
+# ボタンなどのウィジェットは最下層に置かなければならない。
+# 基本的構造は、window(root) > Tab(Frame) > Box(LabelFrame) > 最下層ウィジェット
 
-class Frame():
-
-    def __init__(self, root, label):
+class Window():
+    def __init__(self, title_):
         self.r = 0
-        self.root = root
-        self.frm = tk.LabelFrame(root, text=label)
-        self.frm.pack(padx=5, pady=5)
+        self.root = tk.Tk()
+        self.root.title(title_)
+        self.nb = ttk.Notebook()
 
-    def dropdown(self, label, values):
-        name = tk.Label(self.frm, text=label)
-        name.grid(row=self.r, column=0)
-        db = ttk.Combobox(self.frm, state='readonly')
+class Tab():
+    def __init__(self, master, label):
+        self.r = 0
+        self.entity = tk.Frame(master.nb)
+        master.nb.add(self.entity, text=label, padding=3)
+        master.nb.pack(expand=1, fill='both')
+        master.r += 1
+
+class Box():
+    def __init__(self, master, label):
+        print(master.r)
+        self.r = 0
+        self.entity = tk.LabelFrame(master.entity, text=label)
+        self.entity.pack(padx=5, pady=5)
+        master.r += 1
+
+class Button():
+    def __init__(self, master, label, bind_action):
+        print(master.r)
+        self.entity = tk.Button(master.entity, text=label, command=bind_action)
+        self.entity.grid(row=master.r, column=1, padx=3, pady=3)
+        master.r += 1
+
+class DropDown():
+    def __init__(self, master, label, values):
+        name = tk.Label(master.entity, text=label)
+        name.grid(row=master.r, column=0)
+        db = ttk.Combobox(master.entity, state='readonly')
         db["values"] = values
         db.current(0)
-        db.grid(row=self.r, column=1, padx=3, pady=3)
-        self.r += 1
+        db.grid(row=master.r, column=1, padx=3, pady=3)
+        master.r += 1
 
-    def slider(self, label, min_, max_):
-        name = tk.Label(self.frm, text=label)
-        name.grid(row=self.r, column=0)
-        sl = tk.Scale(self.frm, from_=min_, to=max_, orient=tk.HORIZONTAL)
-        sl.grid(row=self.r, column=1, padx=3, pady=3)
-        self.r += 1
+class Slider():
+    def __init__(self, master, label, min_, max_):
+        name = tk.Label(master.entity, text=label)
+        name.grid(row=master.r, column=0)
+        sl = tk.Scale(master.entity, from_=min_, to=max_, orient=tk.HORIZONTAL)
+        sl.grid(row=master.r, column=1, padx=3, pady=3)
+        master.r += 1
 
-    def checkbox(self, label, ture_false):
-        name = tk.Label(self.frm, text=label)
-        name.grid(row=self.r, column=0)
+class CheckBox():
+    def __init__(self, master, label, ture_false):
+        name = tk.Label(master.entity, text=label)
+        name.grid(row=master.r, column=0)
 
         if ture_false:
             val = tk.BooleanVar().set(True)
         else:
             val = tk.BooleanVar().set(False)
 
-        cb = tk.Checkbutton(self.frm, variable=val)
-        cb.grid(row=self.r, column=1, padx=3, pady=3)
-        self.r += 1
+        cb = ttk.Checkbutton(master.entity, variable=val)
+        cb.grid(row=master.r, column=1, padx=3, pady=3)
+        master.r += 1
+
+####################################################
+
+
+def test_action_print():
+    print("hello_tk_world")
+
 
 ####################################################
 if __name__ == '__main__':
-    # waku ##########################
-    root = tk.Tk()
-    root.title("sample waku")
+    # make window ##########################
+    window1 = Window("sample waku1")
 
-    # tab1 ##########
-    nb = ttk.Notebook()
-    tab1 = tk.Frame(nb)
-    nb.add(tab1, text="tab1", padding=3)
-    nb.pack(expand=1, fill='both')
+    # make tab1
+    tab1 = Tab(window1, "Tab1")
+    box1_1 = Box(tab1, "box1_1")
+    box1_2 = Box(tab1, "box1_2")
 
-    # frame 1-1
-    frm_1_1 = Frame(tab1, 'frame 1-1')
-    frm_1_1.slider("param1", 0, 100)
-    frm_1_1.dropdown("param2", ["1", "2", "3"])
-    frm_1_1.dropdown("param3", ["a", "b", "c"])
+    btn1 = Button(box1_1, "btn1", test_action_print)
+    btn2 = Button(box1_2, "btn2", test_action_print)
+    slider = Slider(box1_1, "param1", 0, 100)
+    dropdown1 = DropDown(box1_1, "param2", ["1", "2", "3"])
 
-    # frame 1-2
-    frm_1_2 = Frame(tab1, 'frame 1-2')
-    frm_1_2.slider("param1", 0, 100)
-    frm_1_2.dropdown("param2", ["1", "2", "3"])
-    frm_1_2.dropdown("param3", ["a", "b", "c"])
-    frm_1_2.checkbox("param4", True)
+    # make tab2
+    tab2 = Tab(window1, "Tab2")
+    box2_1 = Box(tab2, "box2_1")
+    box2_2 = Box(tab2, "box2_2")
+    dropdown2 = DropDown(box2_1, "param3", ["a", "b", "c"])
+    checkbox = CheckBox(box2_1, "param4", True)
 
-    # tab2 ##########
-    tab2 = tk.Frame(nb)
-    nb.add(tab2, text="tab2", padding=3)
-    nb.pack(expand=1, fill='both')
-
-    # frame 2-1
-    frm_2_1 = Frame(tab2, 'frame 2-1')
-    frm_2_1.dropdown("param1", ["a", "b", "c"])
-    frm_2_1.checkbox("param2", True)
 
     # gen gui
-    root.mainloop()
+    window1.root.mainloop()

@@ -5,6 +5,26 @@ import sys
 import tkinter as tk
 import tkinter.ttk as ttk
 
+class Window():
+
+    def __init__(self, title_):
+        self.root = tk.Tk()
+        self.root.title(title_)
+
+        self.nb = ttk.Notebook()
+
+    def add_tab(self, tabname):
+        self.tab = tk.Frame(self.nb)
+        self.nb.add(self.tab, text=tabname, padding=3)
+        self.nb.pack(expand=1, fill='both')
+
+class Tab(ttk.Notebook):
+    def __init__(self, master=None):
+        super().__init__(master)
+        f1 = tkinter.Text(self)
+        f2 = tkinter.Button(self, text="Button")
+        self.add(f1, text="Text")
+        self.add(f2, text="Button")
 
 class Frame():
 
@@ -48,18 +68,10 @@ class Frame():
         btn.grid(row=self.r, column=1, padx=3, pady=3)
         self.r += 1
 
-class Window():
 
-    def __init__(self, title_):
-        self.root = tk.Tk()
-        self.root.title(title_)
 
-        self.nb = ttk.Notebook()
 
-    def add_tab(self, tabname):
-        self.tab = tk.Frame(self.nb)
-        self.nb.add(self.tab, text=tabname, padding=3)
-        self.nb.pack(expand=1, fill='both')
+
 
 ####################################################
 def test_action_print():
@@ -70,7 +82,6 @@ if __name__ == '__main__':
     # waku ##########################
     window1 = Window("sample waku")
 
-
     # tab1 = window1.add_tab("classtab1")
 
     # tab1 ##########
@@ -78,8 +89,6 @@ if __name__ == '__main__':
     tab1 = tk.Frame(nb)
     nb.add(tab1, text="tab1", padding=3)
     nb.pack(expand=1, fill='both')
-
-
 
     # frame 1-1
     frm_1_1 = Frame(tab1, 'frame 1-1')
