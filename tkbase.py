@@ -26,7 +26,6 @@ class Tab():
 
 class Box():
     def __init__(self, master, label):
-        print(master.r)
         self.r = 0
         self.entity = tk.LabelFrame(master.entity, text=label)
         self.entity.pack(padx=5, pady=5)
@@ -34,7 +33,6 @@ class Box():
 
 class Button():
     def __init__(self, master, label, bind_action):
-        print(master.r)
         self.entity = tk.Button(master.entity, text=label, command=bind_action)
         self.entity.grid(row=master.r, column=1, padx=3, pady=3)
         master.r += 1
